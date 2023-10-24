@@ -1,6 +1,6 @@
 import { Request as ExpressRequest } from 'express';
 
-interface User {
+export interface User {
   id: string;
   username: string;
   email: string;
