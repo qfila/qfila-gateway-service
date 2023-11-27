@@ -22,12 +22,51 @@ export class QueueService {
     return createdQueue;
   }
 
+  async findByQueueId(queueId: string, user: User) {
+    const url = `${this.baseUrl}/${queueId}?userId=${user.id}`;
+
+    const { data: queue } = await this.httpClientService.get(url);
+
+    return queue;
+  }
+
   async list(user: User) {
     const url = this.baseUrl + `?ownerId=${user.id}`;
 
     const { data: queues } = await this.httpClientService.get(url);
 
     return queues;
+  }
+
+  async addUser(queueId: string, userId: string) {
+    const url = `${this.baseUrl}/${queueId}/user`;
+    const { data: res } = await this.httpClientService.post(url, { userId });
+
+    return res;
+  }
+
+  async replaceUserPosition(
+    queueId: string,
+    userId: string,
+    newPosition: number,
+    ownerId: string,
+  ) {
+    const url = `${this.baseUrl}/${queueId}/users/${userId}/replace_position`;
+
+    const { data: res } = await this.httpClientService.put(url, {
+      newPosition,
+      userId: ownerId,
+    });
+
+    return res;
+  }
+
+  async delete(queueId: string, ownerId: string) {
+    const url = `${this.baseUrl}/${queueId}?userId=${ownerId}`;
+
+    const { data: res } = await this.httpClientService.delete(url);
+
+    return res;
   }
 
   private get baseUrl() {

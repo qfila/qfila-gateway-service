@@ -5,18 +5,46 @@ import {
   Request,
   UseGuards,
   Get,
+  Param,
+  Delete,
+  Put,
 } from '@nestjs/common';
 import { CreateQueueDTO } from './dtos/create-queue.dto';
 import { QueueService } from './queue.service';
 import { plainToInstance } from 'class-transformer';
-import { QueueModel, QueuesModel } from './queue.model';
+import {
+  QueueModel,
+  QueueWithParticipantsModel,
+  QueuesModel,
+} from './queue.model';
 import { RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ReplaceUserPositionDTO } from './dtos/replace-user-position.dto';
 
 @Controller('queue')
 @UseGuards(JwtAuthGuard)
 export class QueueController {
   constructor(private readonly queueService: QueueService) {}
+
+  @Get()
+  async listOwnerQueues(@Request() req: RequestWithUser) {
+    const queues = await this.queueService.list(req.user);
+
+    return plainToInstance(QueuesModel, { queues });
+  }
+
+  @Get(':id')
+  async findQueueById(
+    @Param('id') id: string,
+    @Request() req: RequestWithUser,
+  ) {
+    const queueWithParticipants = await this.queueService.findByQueueId(
+      id,
+      req.user,
+    );
+
+    return plainToInstance(QueueWithParticipantsModel, queueWithParticipants);
+  }
 
   @Post()
   async create(
@@ -31,10 +59,30 @@ export class QueueController {
     return plainToInstance(QueueModel, createdQueue);
   }
 
-  @Get()
-  async listOwnerQueues(@Request() req: RequestWithUser) {
-    const queues = await this.queueService.list(req.user);
+  @Post(':id/join')
+  async addUser(@Param('id') id: string, @Request() req: RequestWithUser) {
+    const res = await this.queueService.addUser(id, req.user.id);
 
-    return plainToInstance(QueuesModel, queues);
+    return res;
+  }
+
+  @Put(':id/users/:user_id/replace_position')
+  async replaceUserPosition(
+    @Param('id') queueId: string,
+    @Param('user_id') userId: string,
+    @Body() replaceUserPositionDTO: ReplaceUserPositionDTO,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.queueService.replaceUserPosition(
+      queueId,
+      userId,
+      replaceUserPositionDTO.newPosition,
+      req.user.id,
+    );
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Request() req: RequestWithUser) {
+    return this.queueService.delete(id, req.user.id);
   }
 }
