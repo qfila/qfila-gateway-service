@@ -30,8 +30,16 @@ export class QueueService {
     return queue;
   }
 
+  async findByCode(code: string, user: User) {
+    const url = `${this.baseUrl}/?userId=${user.id}&code=${code}`;
+
+    const { data: queue } = await this.httpClientService.get(url);
+
+    return queue;
+  }
+
   async list(user: User) {
-    const url = this.baseUrl + `?ownerId=${user.id}`;
+    const url = this.baseUrl + `?userId=${user.id}`;
 
     const { data: queues } = await this.httpClientService.get(url);
 

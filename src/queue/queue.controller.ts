@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CreateQueueDTO } from './dtos/create-queue.dto';
 import { QueueService } from './queue.service';
@@ -27,7 +28,16 @@ export class QueueController {
   constructor(private readonly queueService: QueueService) {}
 
   @Get()
-  async listOwnerQueues(@Request() req: RequestWithUser) {
+  async listOwnerQueues(
+    @Request() req: RequestWithUser,
+    @Query('code') code?: string,
+  ) {
+    if (code) {
+      const queue = await this.queueService.findByCode(code, req.user);
+
+      return plainToInstance(QueueModel, queue);
+    }
+
     const queues = await this.queueService.list(req.user);
 
     return plainToInstance(QueuesModel, { queues });

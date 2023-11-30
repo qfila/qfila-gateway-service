@@ -7,6 +7,9 @@ export class QueueModel {
   id: string;
 
   @Expose()
+  code: string;
+
+  @Expose()
   title: string;
 
   @Exclude()
