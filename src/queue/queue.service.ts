@@ -53,6 +53,13 @@ export class QueueService {
     return res;
   }
 
+  async removeUser(queueId: string, ownerId: string, userId: string) {
+    const url = `${this.baseUrl}/${queueId}/user/${userId}?ownerId=${ownerId}`;
+    const { data: res } = await this.httpClientService.delete(url);
+
+    return res;
+  }
+
   async replaceUserPosition(
     queueId: string,
     userId: string,

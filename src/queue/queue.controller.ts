@@ -76,6 +76,17 @@ export class QueueController {
     return res;
   }
 
+  @Delete(':id/user/:user_id')
+  async removeUser(
+    @Param('id') id: string,
+    @Param('user_id') userId: string,
+    @Request() req: RequestWithUser,
+  ) {
+    const res = await this.queueService.removeUser(id, req.user.id, userId);
+
+    return res;
+  }
+
   @Put(':id/users/:user_id/replace_position')
   async replaceUserPosition(
     @Param('id') queueId: string,
