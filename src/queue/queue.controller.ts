@@ -87,6 +87,11 @@ export class QueueController {
     return res;
   }
 
+  @Post(':id/exit')
+  async exit(@Param('id') id: string, @Request() req: RequestWithUser) {
+    return await this.queueService.exit(id, req.user.id);
+  }
+
   @Put(':id/users/:user_id/replace_position')
   async replaceUserPosition(
     @Param('id') queueId: string,

@@ -60,6 +60,14 @@ export class QueueService {
     return res;
   }
 
+  async exit(queueId: string, userId: string) {
+    const url = `${this.baseUrl}/${queueId}/exit?userId=${userId}`;
+
+    await this.httpClientService.post(url, {});
+
+    return null;
+  }
+
   async replaceUserPosition(
     queueId: string,
     userId: string,
