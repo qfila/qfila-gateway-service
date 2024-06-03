@@ -14,20 +14,11 @@ export class AuthController {
       id: req.user.id,
       username: req.user.username,
       email: req.user.email,
-<<<<<<< Updated upstream
-=======
       role: req.user.role,
->>>>>>> Stashed changes
     };
 
     const { accessToken } = await this.authService.login(loginPayload);
 
-<<<<<<< Updated upstream
-    return {
-      accessToken,
-    };
-=======
     return { ...loginPayload, accessToken };
->>>>>>> Stashed changes
   }
 }
