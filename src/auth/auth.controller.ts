@@ -14,11 +14,11 @@ export class AuthController {
       id: req.user.id,
       username: req.user.username,
       email: req.user.email,
-      role: req.user.role
+      role: req.user.role,
     };
-    
+
     const { accessToken } = await this.authService.login(loginPayload);
-    
+
     return { ...loginPayload, accessToken };
   }
 }
