@@ -21,6 +21,7 @@ import {
 import { RequestWithUser } from 'src/auth/interfaces/request-with-user.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ReplaceUserPositionDTO } from './dtos/replace-user-position.dto';
+import { UpdateQueueDTO } from './dtos/update-queue.dto';
 
 @Controller('queue')
 @UseGuards(JwtAuthGuard)
@@ -67,6 +68,21 @@ export class QueueController {
     );
 
     return plainToInstance(QueueModel, createdQueue);
+  }
+
+  @Put(':id')
+  async update(
+    @Body() updateQueueDTO: UpdateQueueDTO,
+    @Param('id') id: string,
+    @Request() req: RequestWithUser,
+  ) {
+    const updatedQueue = await this.queueService.update(
+      id,
+      updateQueueDTO,
+      req.user,
+    );
+
+    return plainToInstance(QueueModel, updatedQueue);
   }
 
   @Post(':id/join')

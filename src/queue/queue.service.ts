@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { CreateQueueDTO } from './dtos/create-queue.dto';
 import { HttpClientService } from 'src/http-client/http-client.service';
 import { User } from 'src/auth/interfaces/request-with-user.interface';
+import { UpdateQueueDTO } from './dtos/update-queue.dto';
 
 @Injectable()
 export class QueueService {
@@ -17,6 +18,17 @@ export class QueueService {
     const { data: createdQueue } = await this.httpClientService.post(url, {
       ...createQueueDTO,
       ownerId: user.id,
+    });
+
+    return createdQueue;
+  }
+
+  async update(id: string, updateQueueDTO: UpdateQueueDTO, user: User) {
+    const url = `${this.baseUrl}/${id}`;
+
+    const { data: createdQueue } = await this.httpClientService.put(url, {
+      ...updateQueueDTO,
+      userId: user.id,
     });
 
     return createdQueue;
